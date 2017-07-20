@@ -41,7 +41,7 @@ server.on('connection', (client) => {
     client.on('updateTodo', (updatedTodo)=>{
            DB.forEach((todo) => {
              if (todo.title == updatedTodo.title) {
-                   todo.completed = updatedTodo.completed
+                    todo.completed = updatedTodo.completed
             }
         });
     });
@@ -52,7 +52,21 @@ server.on('connection', (client) => {
             todo.completed = true;
 
         });
-    })
+    });
+
+    
+
+    //removes all todos
+    //left in consoles in case you want to see it in action in the terminal
+
+    client.on('removeAllTodos', ()=>{
+      while(DB.length > 0) {
+        // console.log('BEFORE REMOVE: ', DB);
+        DB.pop();
+        // console.log('AFTER REMOVE: ', DB);
+        }
+    });
+
 
 
     // Send the DB downstream on connect

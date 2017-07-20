@@ -55,6 +55,12 @@ function completeAll(){
     });
 }
 
+function removeAllTodos(){
+    server.emit('removeAllTodos');
+    const todoList = document.getElementById('todo-list');
+    todoList.innerHTML = '';
+}
+
 
 function render(todo) {
     // this function needs some template help.
