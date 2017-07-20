@@ -1,0 +1,14 @@
+[
+    {
+        "title" : "Order more coffee",
+        "completed": false
+    },
+    {
+        "title" : "Clean the coffee machine",
+        "completed": false
+    },
+    {
+        "title" : "Sweep the floor",
+        "completed": true
+    }
+]
