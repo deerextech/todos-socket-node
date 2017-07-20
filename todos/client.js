@@ -19,62 +19,46 @@ function add() {
     titleInput.value = '';
 }
 
-//this update function needs improvement. 
-//It is conflicting with remove function... 
-function updateEventListener(){
-    var completedTodo = document.getElementById('todo-list');
-    // var completedTodo = document.getElementsByTagName('LI')
+//complete single todo
+//uses random generated id to target input that was checked
+function completeTodo(id){
 
-    completedTodo.addEventListener("click", updateTodo)
-   
+    var selectedTodo = document.getElementById(id);
+    var getTitle = selectedTodo.parentNode.parentNode.children[1].innerHTML.trim();
+
+    var checked = selectedTodo.getAttribute('checked');
+
+         server.emit('updateTodo', {
+                title: getTitle,
+                completed: true
+            });
+
+    selectedTodo.parentNode.parentNode.setAttribute('class', ' completed-todo')
+  
+
 }
-  function updateTodo(e){
-        
-    var updateCompleted = e.target.parentNode;
-    updateCompleted.setAttribute('checked', 'checked');
-    updateCompleted.className += 'completed-todo';
-    console.log('target', updateCompleted)
-    
-
-    var title = updateCompleted.lastChild.innerHTML;
-
-     server.emit('updateTodo',{
-            title: title,
-            completed: true
-        });
-   }
 
 function completeAll(){
     var allTodos = document.getElementsByClassName('todo-status');
     for(i=0; i < allTodos.length; i++){
         var todo = allTodos[i];
         todo.setAttribute('checked', 'checked');
-        todo.parentNode.setAttribute('class', ' completed-todo')
+        todo.parentNode.parentNode.setAttribute('class', ' completed-todo')
     }
     server.emit('completeAll',{
         completed:true
     });
 }
 
-function remove(){
-    console.log('remove fn');
-    var todoList = jQuery('.todo-list-item');
-    console.log('what is todo list', todoList);
-    // todoList.addEventListener("click", deleteSingleTodo);
-}
+function remove(id){
 
-function deleteSingleTodo (e) {
-    console.log('what is target now', e.target.parentNode);
+    var selectedTodo = document.getElementById(id);
 
-    var removeTodo = e.target;
-    var removeLI = removeTodo.parentNode;
-        server.emit('removeTodo', {
-            title: removeTodo.innerHTML
+     server.emit('removeTodo', {
+            title: selectedTodo.innerHTML.trim()
         });
 
-        removeLI.remove();
-    
-  
+    selectedTodo.parentNode.remove();
 }
 
 function removeAllTodos(){
@@ -85,41 +69,33 @@ function removeAllTodos(){
 
 
 function render(todo) {
-
+    var listItem = document.getElementsByClassName('todo-list-items');
     var template = jQuery('#todo-list-template').html();
 
     var html = Mustache.render(template, {
+        inputId:Math.floor(Math.random() * ((1000-2)+1) + 2),
+        divId: Math.floor(Math.random() * ((1000-2)+1) + 2), //generates random Id number.
         title: todo.title,
         completed: todo.completed
     });
+    ///NEED TO FIX CONDITION FOR : 
+    //setting line-through class to elements that have todos that are already completed
+    
+    // if(todo.completed === true){
+
+    //     console.log('set class to: ', todo.parentNode);
+
+    //     // listItem.setAttribute('class', 'completed-todo');
+    //     // console.log('in here at all?', todo.parentNode);
+
+    //     // listItem.className += ' completed-todo';
+    //      // var listItem = 
+    //      $('.todo-status').attr('checked', todo.completed);
+    //      // $('todo-list-items').className += ' completed-todo';
+    // }
 
     jQuery('#todo-list').append(html);
 
-    // this function needs some template help.
-    //mustache.js maybe.. 
-
-    //LI tag
-   //  const listItem = document.createElement('li');
-   //  const listItemText = document.createTextNode(todo.title);
-   //  //span for formatting & remove by click
-   //  const span = document.createElement('span');
-   //  span.setAttribute("onClick", 'remove()');
-   // //Input
-   //  var completedStatus = document.createElement('input');
-   //  completedStatus.setAttribute('type', 'checkbox');
-   //  completedStatus.setAttribute('onclick', 'updateEventListener()');
-   //  completedStatus.className = 'todo-status';
-
-   //  //any todos that are completed will receive special class
-   //  if(todo.completed === true){
-   //       completedStatus.setAttribute('checked', todo.completed);
-   //       listItem.className += ' completed-todo';
-   //  }
-
-   //  listItem.appendChild(completedStatus);
-   //  listItem.appendChild(span);
-   //  span.appendChild(listItemText);
-   //  list.append(listItem);
 }
 
 // NOTE: These are listeners for events from the server

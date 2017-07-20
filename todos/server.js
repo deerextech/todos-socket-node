@@ -39,9 +39,12 @@ server.on('connection', (client) => {
 
     //updates selected todo
     client.on('updateTodo', (updatedTodo)=>{
+        console.log('why no work');
            DB.forEach((todo) => {
              if (todo.title == updatedTodo.title) {
-                    todo.completed = updatedTodo.completed
+                console.log('BEFORE UPDATE: ', DB);
+                todo.completed = updatedTodo.completed
+                console.log('AFTER UPDATE: ', DB);
             }
         });
     });
@@ -52,18 +55,31 @@ server.on('connection', (client) => {
             todo.completed = true;
 
         });
+        console.log('COMPLETE ALL:, ' , DB);
+
     });
 
-    
+      client.on('removeTodo', (removeTodo) =>{
+          DB.forEach((todo) => {
+             if (todo.title === removeTodo.title) {
+                var index = todo.title.indexOf(todo.title);
+                console.log('BEFORE REMOVE DB: ', DB);
+                var removedObject = DB.splice(index,1);
+                removedObject = null;
+                console.log('AFTER REMOVE DB: ', DB);
+            }
+        });
+
+    });
 
     //removes all todos
     //left in consoles in case you want to see it in action in the terminal
 
     client.on('removeAllTodos', ()=>{
       while(DB.length > 0) {
-        // console.log('BEFORE REMOVE: ', DB);
+        console.log('BEFORE REMOVE ALL: ', DB);
         DB.pop();
-        // console.log('AFTER REMOVE: ', DB);
+        console.log('AFTER REMOVE: ALL ', DB);
         }
     });
 
