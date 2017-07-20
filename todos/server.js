@@ -10,7 +10,7 @@ server.on('connection', (client) => {
     // connections from the last time the server was run...
     const DB = firstTodos.map((t) => {
         // Form new Todo objects
-        return new Todo(title=t.title);
+        return new Todo(title=t.title, completed=t.completed);
     });
 
     // Sends a message to the client to reload all todos
@@ -24,6 +24,7 @@ server.on('connection', (client) => {
         server.emit('addTodo', todo);
     }
 
+
     // Accepts when a client makes a new todo
     client.on('makeTodo', (t) => {
         // Make a new todo
@@ -36,9 +37,29 @@ server.on('connection', (client) => {
         addTodo(newTodo);
     });
 
+    //updates selected todo
+    client.on('updateTodo', (updatedTodo)=>{
+           DB.forEach((todo) => {
+             if (todo.title == updatedTodo.title) {
+                   todo.completed = updatedTodo.completed
+            }
+        });
+    });
+    //updates all todos
+    client.on('completeAll', ()=>{
+        //for each, set completed to true
+        DB.forEach((todo) => {
+            todo.completed = true;
+
+        });
+    })
+
+
     // Send the DB downstream on connect
     reloadTodos();
 });
+
+
 
 console.log('Waiting for clients to connect');
 server.listen(3003);

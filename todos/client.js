@@ -21,11 +21,65 @@ function add() {
     // TODO: refocus the element
 }
 
+//this update function needs improvement. 
+function updateEventListener(){
+    var completedTodo = document.getElementById('todo-list')
+    completedTodo.addEventListener("click", updateTodo)
+   
+}
+  function updateTodo(e){
+        
+    var updateCompleted = e.target.parentNode;
+    updateCompleted.setAttribute('checked', 'checked');
+    updateCompleted.className += 'completed-todo';
+    console.log('target', updateCompleted)
+    
+
+    var title = updateCompleted.lastChild.innerHTML;
+
+     server.emit('updateTodo',{
+            title: title,
+            completed: true
+        });
+   }
+
+function completeAll(){
+    var allTodos = document.getElementsByClassName('todo-status');
+    for(i=0; i < allTodos.length; i++){
+        var todo = allTodos[i];
+        todo.setAttribute('checked', 'checked');
+        todo.parentNode.setAttribute('class', ' completed-todo')
+    }
+    server.emit('completeAll',{
+        completed:true
+    });
+}
+
+
 function render(todo) {
-    console.log(todo);
+    // this function needs some template help.
+    //mustache.js maybe.. 
+
+    //LI tag
     const listItem = document.createElement('li');
     const listItemText = document.createTextNode(todo.title);
-    listItem.appendChild(listItemText);
+    //span for formatting
+    const span = document.createElement('span');
+   //Input
+    var completedStatus = document.createElement('input');
+    completedStatus.setAttribute('type', 'checkbox');
+    completedStatus.setAttribute('onclick', 'updateEventListener()');
+    completedStatus.className = 'todo-status';
+
+    //any todos that are completed will receive special class
+    if(todo.completed === true){
+         completedStatus.setAttribute('checked', todo.completed);
+         listItem.className += ' completed-todo';
+    }
+
+    listItem.appendChild(completedStatus);
+    listItem.appendChild(span);
+    span.appendChild(listItemText);
     list.append(listItem);
 }
 
