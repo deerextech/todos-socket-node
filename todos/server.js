@@ -18,17 +18,22 @@ server.on('connection', (client) => {
         server.emit('load', DB);
     }
 
+    //made this to take care of adding a single todo
+    // gets rid of re-rendering entire list again.
+    const addTodo = (todo) =>{
+        server.emit('addTodo', todo);
+    }
+
     // Accepts when a client makes a new todo
-    client.on('make', (t) => {
+    client.on('makeTodo', (t) => {
         // Make a new todo
         const newTodo = new Todo(title=t.title);
 
         // Push this newly created todo to our database
         DB.push(newTodo);
 
-        // Send the latest todos to the client
-        // FIXME: This sends all todos every time, could this be more efficient?
-        reloadTodos();
+     // Send the latest todo to the client
+        addTodo(newTodo);
     });
 
     // Send the DB downstream on connect
