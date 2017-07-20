@@ -11,6 +11,20 @@
         <button type="button" onclick="removeAllTodos()">Remove All</button>
         <button type="button" onclick="completeAll()">Mark All As Complete</button>
         <ul id="todo-list"></ul>
+
+            <script id="todo-list-template" type="text/template">
+            <li class="todo-list-items">
+              <div class="todo-list-input">
+               <input type="checkbox" {{completed}} />
+              </div>
+              <div class="todo-list-item" onclick="remove()">
+               {{title}}
+              </div>
+            </li>
+            </script>
+
+       
+
         <style type="text/css">
             .completed-todo{
                 font-style: italic;
@@ -18,5 +32,7 @@
             }
         </style>
     </body>
+    <script src="./libs/jquery.min.js"></script>
+    <script src="./libs/mustache.js"></script>
     <script src="client.js" async></script>
 </html>

@@ -17,13 +17,14 @@ function add() {
 
     // Clear the input
     titleInput.value = '';
-
-    // TODO: refocus the element
 }
 
 //this update function needs improvement. 
+//It is conflicting with remove function... 
 function updateEventListener(){
-    var completedTodo = document.getElementById('todo-list')
+    var completedTodo = document.getElementById('todo-list');
+    // var completedTodo = document.getElementsByTagName('LI')
+
     completedTodo.addEventListener("click", updateTodo)
    
 }
@@ -55,6 +56,27 @@ function completeAll(){
     });
 }
 
+function remove(){
+    console.log('remove fn');
+    var todoList = jQuery('.todo-list-item');
+    console.log('what is todo list', todoList);
+    // todoList.addEventListener("click", deleteSingleTodo);
+}
+
+function deleteSingleTodo (e) {
+    console.log('what is target now', e.target.parentNode);
+
+    var removeTodo = e.target;
+    var removeLI = removeTodo.parentNode;
+        server.emit('removeTodo', {
+            title: removeTodo.innerHTML
+        });
+
+        removeLI.remove();
+    
+  
+}
+
 function removeAllTodos(){
     server.emit('removeAllTodos');
     const todoList = document.getElementById('todo-list');
@@ -63,30 +85,41 @@ function removeAllTodos(){
 
 
 function render(todo) {
+
+    var template = jQuery('#todo-list-template').html();
+
+    var html = Mustache.render(template, {
+        title: todo.title,
+        completed: todo.completed
+    });
+
+    jQuery('#todo-list').append(html);
+
     // this function needs some template help.
     //mustache.js maybe.. 
 
     //LI tag
-    const listItem = document.createElement('li');
-    const listItemText = document.createTextNode(todo.title);
-    //span for formatting
-    const span = document.createElement('span');
-   //Input
-    var completedStatus = document.createElement('input');
-    completedStatus.setAttribute('type', 'checkbox');
-    completedStatus.setAttribute('onclick', 'updateEventListener()');
-    completedStatus.className = 'todo-status';
+   //  const listItem = document.createElement('li');
+   //  const listItemText = document.createTextNode(todo.title);
+   //  //span for formatting & remove by click
+   //  const span = document.createElement('span');
+   //  span.setAttribute("onClick", 'remove()');
+   // //Input
+   //  var completedStatus = document.createElement('input');
+   //  completedStatus.setAttribute('type', 'checkbox');
+   //  completedStatus.setAttribute('onclick', 'updateEventListener()');
+   //  completedStatus.className = 'todo-status';
 
-    //any todos that are completed will receive special class
-    if(todo.completed === true){
-         completedStatus.setAttribute('checked', todo.completed);
-         listItem.className += ' completed-todo';
-    }
+   //  //any todos that are completed will receive special class
+   //  if(todo.completed === true){
+   //       completedStatus.setAttribute('checked', todo.completed);
+   //       listItem.className += ' completed-todo';
+   //  }
 
-    listItem.appendChild(completedStatus);
-    listItem.appendChild(span);
-    span.appendChild(listItemText);
-    list.append(listItem);
+   //  listItem.appendChild(completedStatus);
+   //  listItem.appendChild(span);
+   //  span.appendChild(listItemText);
+   //  list.append(listItem);
 }
 
 // NOTE: These are listeners for events from the server
