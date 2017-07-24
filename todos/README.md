@@ -5,11 +5,7 @@ Set up
 2. Still just need to run an npm install to download them all
 3. Npm Start to run
 
--- One note about npm start --
-I like developing with nodemon.. I included it as a dev dependency so it is automaically downloaded upon installation.
 
--- Npm start will now run with nodemon. 
--- Just need to swap it out for "node server/server.js" if you don't want to use it.
 
 ## Some info about the direction I took ##
 
