@@ -13,7 +13,7 @@
         <ul id="todo-list"></ul>
 
         <script id="todo-list-template" type="text/template">
-            <li class="todo-list-items">
+            <li class="todo-list-items {{completedClass}} ">
               <div class="todo-list-input">
                <input id="{{inputId}}" class="todo-status" type="checkbox"  onclick="completeTodo(id)" />
               </div>

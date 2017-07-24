@@ -1,6 +1,7 @@
 const server = io('http://localhost:3003/');
 const list = document.getElementById('todo-list');
- var localstorage = window.localStorage;
+
+var localstorage = window.localStorage;
 
 // NOTE: These are all our globally scoped functions for interacting with the server
 // This function adds a new todo from the input
@@ -26,12 +27,24 @@ function add() {
 function completeTodo(id){
 
     var selectedTodo = document.getElementById(id);
-    var getTitle = selectedTodo.parentNode.parentNode.children[1].innerHTML.trim();
+    var todoTitle = selectedTodo.parentNode.parentNode.children[1].innerHTML.trim();
 
-    var checked = selectedTodo.getAttribute('checked');
+   var checked = selectedTodo.setAttribute('checked', true);
+
+    var selectedTodoId = selectedTodo.parentNode.parentNode.children[1].getAttribute('id');
+  
+    //this will overwrite existing stored value (because IDs match)
+    var localTodo = {
+        id:selectedTodoId,
+        title:todoTitle,
+        completed:true
+    };
+    //set completed to true.
+    localstorage.setItem(selectedTodoId, JSON.stringify(localTodo));
+    console.log('local storage', localstorage);
 
          server.emit('updateTodo', {
-                title: getTitle,
+                title: todoTitle,
                 completed: true
             });
 
@@ -82,30 +95,16 @@ function render(todo) {
     var listItem = document.getElementsByClassName('todo-list-items');
     var template = jQuery('#todo-list-template').html();
 
+
+
     var html = Mustache.render(template, {
         inputId:Math.floor(Math.random() * ((1000-2)+1) + 2),
         divId: todo.id, //generates random Id number.
         title: todo.title,
-        completed: todo.completed
+        completedClass: todo.completed ? 'completed-todo': ''
     });
 
-    ///NEED TO FIX CONDITION FOR : 
-    //setting line-through class to elements that have todos that are already completed
-    
-    // if(todo.completed === true){
-
-    //     // console.log('jfdkas;s', jQuery('#todo-list-template'));
-    //     // console.log('what tods in hur', todo.parentNode);
-    //     // console.log('div maybe', divId);
-    //     // listItem.setAttribute('class', 'completed-todo');
-    //      jQuery('.todo-list-items').attr('class', 'completed-todo'); 
-    //     // template.setAttribute('class', 'completed-todo');
-    //     // listItem.className += ' completed-todo';
-    //       var listItem = 
-    //      $('.todo-status').attr('checked', todo.completed);
-    //      $('todo-list-items').className += ' completed-todo';
-    // }
-
+   
     jQuery('#todo-list').append(html);
 
 }
@@ -114,9 +113,9 @@ function render(todo) {
 server.on('addTodo', (todo)=>{
 
     var newTodoId = todo.id;
-
+    //adds item to local storage
     localstorage.setItem(newTodoId, JSON.stringify(todo));
-
+    //adds item to list
     render(todo);
 });
 
@@ -132,6 +131,7 @@ server.on('load', (todos) => {
             render(storedTodos);
         }
     }
+    //if local storage is empty, load list
     if(localstorage.length === 0){
 
          todos.forEach((todo) => {
