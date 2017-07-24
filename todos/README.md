@@ -15,7 +15,12 @@ I like developing with nodemon.. I included it as a dev dependency so it is auto
 
 I have never worked with socket or web caching.. so I am *hoping* my first attempts turn out okay.
 
-I'm going to write it in plain JS because well I just am pressed for time and it doesn't require any set up.
+Primarily written it in plain JS because well I just am pressed for time and it doesn't require any set up.
+
+Left console logs in server file so that updates and deletes are visible in terminal 
+
+
+-- My localstorage strategy seems convoluted. It's added an extra step to each function. I'm wondering if there is a better strategy that I have yet to find.
 
 
 

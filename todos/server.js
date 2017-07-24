@@ -2,15 +2,18 @@ const server = require('socket.io')();
 const firstTodos = require('./data');
 const Todo = require('./todo');
 
-server.on('connection', (client) => {
+server.on('connection',  (client) => {
+
+
     // This is going to be our fake 'database' for this application
     // Parse all default Todo's from db
 
     // FIXME: DB is reloading on client refresh. It should be persistent on new client
     // connections from the last time the server was run...
+
     const DB = firstTodos.map((t) => {
         // Form new Todo objects
-        return new Todo(title=t.title, completed=t.completed);
+        return new Todo( id=t.id,title=t.title, completed=t.completed);
     });
 
     // Sends a message to the client to reload all todos
@@ -28,8 +31,8 @@ server.on('connection', (client) => {
     // Accepts when a client makes a new todo
     client.on('makeTodo', (t) => {
         // Make a new todo
-        const newTodo = new Todo(title=t.title);
-
+        const newTodo = new Todo( id=t.id,title=t.title, completed=t.completed);
+        console.log(newTodo)
         // Push this newly created todo to our database
         DB.push(newTodo);
 
@@ -39,7 +42,6 @@ server.on('connection', (client) => {
 
     //updates selected todo
     client.on('updateTodo', (updatedTodo)=>{
-        console.log('why no work');
            DB.forEach((todo) => {
              if (todo.title == updatedTodo.title) {
                 console.log('BEFORE UPDATE: ', DB);
@@ -86,7 +88,8 @@ server.on('connection', (client) => {
 
 
     // Send the DB downstream on connect
-    reloadTodos();
+
+        reloadTodos();
 });
 
 

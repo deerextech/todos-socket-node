@@ -1,5 +1,6 @@
 module.exports = class Todo {
-    constructor(title, completed) {
+    constructor(id, title, completed) {
+    	this.id = id,
         this.title = title,
         this.completed = completed
     }

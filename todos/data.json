@@ -1,13 +1,16 @@
 [
     {
+        "id":"1",
         "title" : "Order more coffee",
         "completed": false
     },
     {
+        "id":"2",
         "title" : "Clean the coffee machine",
         "completed": false
     },
     {
+        "id":"3",
         "title" : "Sweep the floor",
         "completed": true
     }
