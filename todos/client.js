@@ -44,7 +44,7 @@ function completeTodo(id){
             });
 
     //add class to mark it as finished.     
-    selectedTodo.parentNode.setAttribute('class', ' completed-todo')
+    selectedTodo.className +=  ' completed-todo';
 
 }
 
@@ -62,7 +62,8 @@ function completeAll(){
 
         //overwrites localstorage with updated complete status
         localstorage.setItem(id, JSON.stringify(localTodos));
-        todo.parentNode.parentNode.setAttribute('class', ' completed-todo');
+        todo.className +=  ' completed-todo';
+        // console.log('todo?', todo)
 
     }
     //update fake DB

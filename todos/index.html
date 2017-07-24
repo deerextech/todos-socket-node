@@ -3,35 +3,51 @@
     <head>
         <meta charset="utf-8">
         <title>TODO</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     </head>
     <body>
-        <input id="todo-input" type="text" placeholder="Feed the cat" autofocus>
-        <button type="button" onclick="add()">Make</button>
-        <button type="button" onclick="removeAllTodos()">Remove All</button>
-        <button type="button" onclick="completeAll()">Mark All As Complete</button>
-        <ul id="todo-list"></ul>
+    <div class="container">
+        <div class="todo-input-container">
+            <h2>Add a new task...</h2>
+            <input id="todo-input" type="text" placeholder="Feed the cat" autofocus>
+            <button type="button" onclick="add()">Make</button>
+              
+        </div>
+        <div>
+            
+            <h2>Tasks</h2>
+            
+            <p>Click completed tasks</p>
+            
+            
+            <ul id="todo-list"></ul>
 
-        <script id="todo-list-template" type="text/template">
-            <li class="todo-list-items {{completedClass}} ">
-              <div class="todo-list-input">
-               <button id="{{buttonId}}" class="todo-btn-delete" type="checkbox"  onclick="remove(id)">Delete</button>
-              </div>
-              <div id="{{divId}}" class="todo-list-item" onclick="completeTodo(id)">
-               {{title}}
-              </div>
-            </li>
-          </script>
+            <script id="todo-list-template" type="text/template">
 
-        <style type="text/css">
-            .completed-todo{
-                font-style: italic;
-                text-decoration: line-through;
-            }
-        </style>
-       <script src="client.js" async></script>
+                <li class="todo-list-items ">
+                  <div class="todo-list-input">
+                   <button id="{{buttonId}}" class="todo-list-btn-delete todo-list-btn-delete-single" type="checkbox"  onclick="remove(id)">x</button>
+                  </div>
+                   <div id="{{divId}}" class="todo-list-item {{completedClass}} " onclick="completeTodo(id)">
+                   {{title}}
+                  </div>
+                </li>
+              </script>
+              <div class="todo-list-buttons">
+
+            <button type="button" class="todo-list-btn todo-list-btn-delete"  onclick="removeAllTodos()">Remove All</button>
+
+            <button type="button" class="todo-list-btn todo-list-btn-complete" onclick="completeAll()">Complete All</button>
+              </div>
+        </div>
+    </div>
+
+    <script src="client.js" async></script>
     <script src="./libs/mustache.js"></script>
     <script src="./libs/jquery.min.js"></script>
+ 
+
     </body>
    
 </html>
