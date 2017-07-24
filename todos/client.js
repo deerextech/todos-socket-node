@@ -23,62 +23,70 @@ function add() {
 }
 
 //complete single todo
-//uses random generated id to target input that was checked
+//uses random generated id to target todo that was selected
 function completeTodo(id){
 
     var selectedTodo = document.getElementById(id);
-    var todoTitle = selectedTodo.parentNode.parentNode.children[1].innerHTML.trim();
-
-   var checked = selectedTodo.setAttribute('checked', true);
-
-    var selectedTodoId = selectedTodo.parentNode.parentNode.children[1].getAttribute('id');
-  
+    var title = selectedTodo.innerHTML.trim();
+    
     //this will overwrite existing stored value (because IDs match)
     var localTodo = {
-        id:selectedTodoId,
-        title:todoTitle,
+        id: selectedTodo.id,
+        title: title,
         completed:true
     };
-    //set completed to true.
-    localstorage.setItem(selectedTodoId, JSON.stringify(localTodo));
-    console.log('local storage', localstorage);
 
+    //set completed to true.
+    localstorage.setItem(id, JSON.stringify(localTodo));
          server.emit('updateTodo', {
-                title: todoTitle,
+                title: title,
                 completed: true
             });
 
-    selectedTodo.parentNode.parentNode.setAttribute('class', ' completed-todo')
-  
+    //add class to mark it as finished.     
+    selectedTodo.parentNode.setAttribute('class', ' completed-todo')
 
 }
 
 function completeAll(){
-    var allTodos = document.getElementsByClassName('todo-status');
+    var allTodos = document.getElementsByClassName('todo-list-item');
     for(i=0; i < allTodos.length; i++){
         var todo = allTodos[i];
-        todo.setAttribute('checked', 'checked');
-        todo.parentNode.parentNode.setAttribute('class', ' completed-todo')
+        var id = todo.id;
+
+        localTodos = {
+            id:id,
+            title: todo.innerHTML.trim(),
+            completed:true
+        }
+
+        //overwrites localstorage with updated complete status
+        localstorage.setItem(id, JSON.stringify(localTodos));
+        todo.parentNode.parentNode.setAttribute('class', ' completed-todo');
+
     }
+    //update fake DB
     server.emit('completeAll',{
         completed:true
     });
 }
 
+//remove single by ID
 function remove(id){
 
     var selectedTodo = document.getElementById(id);
-    var selectedTodoID = selectedTodo.id;
-  
+    var selectedTodoID = selectedTodo.parentNode.parentNode.children[1].getAttribute('id');
+    var title = selectedTodo.parentNode.parentNode.children[1].innerHTML.trim();
 
      server.emit('removeTodo', {
-            title: selectedTodo.innerHTML.trim()
+            title: title
         });
 
     localstorage.removeItem(selectedTodoID);
-    selectedTodo.parentNode.remove();
+    selectedTodo.parentNode.parentNode.remove();
 }
 
+//Remove all.
 function removeAllTodos(){
     server.emit('removeAllTodos');
     const todoList = document.getElementById('todo-list');
@@ -96,17 +104,16 @@ function render(todo) {
     var template = jQuery('#todo-list-template').html();
 
 
-
+    //template for list items
     var html = Mustache.render(template, {
-        inputId:Math.floor(Math.random() * ((1000-2)+1) + 2),
-        divId: todo.id, //generates random Id number.
+        buttonId: Math.floor(Math.random() * ((1000-2)+1) + 2), //generates random Id number.
+        divId: todo.id, 
         title: todo.title,
         completedClass: todo.completed ? 'completed-todo': ''
     });
 
-   
+    //appends template to <ul todo-list-items>   
     jQuery('#todo-list').append(html);
-
 }
 
 
